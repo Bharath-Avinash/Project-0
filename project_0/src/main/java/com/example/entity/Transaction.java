@@ -1,12 +1,14 @@
 package com.example.entity;
 
+import java.sql.Date;
+
 public class Transaction {
 	
 	private int id;
-	private String date;
+	private Date date;
 	private double amount;
 	private String transcationType;
-	public Transaction(int id, String date, double amount, String transcationType) {
+	public Transaction(int id, Date  date, double amount, String transcationType) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -19,10 +21,10 @@ public class Transaction {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getDate() {
+	public Date  getDate() {
 		return date;
 	}
-	public void setDate(String date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
 	public double getAmount() {

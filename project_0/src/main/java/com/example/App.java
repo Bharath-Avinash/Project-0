@@ -19,37 +19,19 @@ public class App {
 		public static Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) throws Exception {
 		
-		Connection con = null;
-		System.out.println("Enter the Amount");
-		double amount = sc.nextDouble();
-		
-		
-		con = ConnectionFactory.getConnection();
-		String sql1 = "select * from Account where number = '2' ";
-		Statement stm1 = con.createStatement();
-		ResultSet rs1 = stm1.executeQuery(sql1);
-		rs1.next();
-		User fromAccount = new User(rs1.getInt(1), rs1.getDouble(2));
-		System.out.println("fromaccount"+fromAccount.getBalance());
-		
-		
-		
-		String sql2 = "select * from Account where number = '1' ";
-		Statement stm2 = con.createStatement();
-		ResultSet rs2 = stm2.executeQuery(sql2);
-		rs2.next();
-		User toAccount = new User(rs2.getInt(1), rs2.getDouble(2));
-		System.out.println("toaccount"+toAccount.getBalance());
-		
-		
-		Transaction(fromAccount, toAccount,  amount,con);
-		
 		
 
 	}
 	
 	
-	public static void Transaction (User fromAccount, User toAccount,double amount,Connection con)  {
+	public static void transaction (User fromAccount, User toAccount,Connection con)  {
+		
+		
+		
+		
+		System.out.println("Enter the Amount");
+		double amount = sc.nextDouble();
+		
 		try {
 		if (fromAccount.getBalance() > amount) {
 
@@ -76,7 +58,12 @@ public class App {
 
 			System.out.println("success");
 			
+			
+			
 			updateTransactionDb(fromAccount, toAccount, con, amount);
+			
+			
+			
 		} else {
 			System.out.println("No Balance");
 		}}catch (Exception e) {
@@ -95,10 +82,11 @@ public class App {
 		  SimpleDateFormat ft = new SimpleDateFormat("dd.MM.yyy");
 		  String date = ft.format(dNow);
 		try {  
-		  String query = "INSERT INTO transaction (number,dateAndTime,amount,debitOrCredit) values (?,?,?,?)";
+		  String query = "INSERT INTO transaction (number,date,amount,debitOrCredit) values (?,?,?,?)";
 		  PreparedStatement ps2 = con.prepareStatement(query);
 		  ps2.setInt(1, fromAccount.getAccNumber());
-		  ps2.setString(2, date);
+		  java.sql.Date sqlDate = new java.sql.Date(new java.util.Date().getTime());
+			ps2.setDate(2, sqlDate);
 		  ps2.setDouble(3,amount);
 		  ps2.setString(4,"Debit" );
 		 // ps2.executeUpdate();
@@ -108,10 +96,11 @@ public class App {
 			}
 		  
 		  
-		 String query1 = "INSERT INTO transaction (number,dateAndTime,amount,debitOrCredit) values (?,?,?,?)";
+		 String query1 = "INSERT INTO transaction (number,date,amount,debitOrCredit) values (?,?,?,?)";
 		PreparedStatement  ps3 = con.prepareStatement(query1);
 		  ps3.setInt(1, toAccount.getAccNumber());
-		  ps3.setString(2, date);
+		  java.sql.Date sqlDat = new java.sql.Date(new java.util.Date().getTime());
+			ps3.setDate(2, sqlDat);
 		  ps3.setDouble(3,amount);
 		  ps3.setString(4,"credit" );
 		 // ps3.executeUpdate();
@@ -135,6 +124,41 @@ public class App {
 		  
 		
 	}
+	  
+	  public static void loadBankAccountsAndTransaction() {
+		  
+			Connection con = null;
+			
+			
+			try {
+			con = ConnectionFactory.getConnection();
+			String sql1 = "select * from Account where number = '2' ";
+			Statement stm1 = con.createStatement();
+			ResultSet rs1 = stm1.executeQuery(sql1);
+			rs1.next();
+			User fromAccount = new User(rs1.getInt(1), rs1.getDouble(2));
+			System.out.println("fromaccount"+fromAccount.getBalance());
+			
+			
+			
+			String sql2 = "select * from Account where number = '1' ";
+			Statement stm2 = con.createStatement();
+			ResultSet rs2 = stm2.executeQuery(sql2);
+			rs2.next();
+			User toAccount = new User(rs2.getInt(1), rs2.getDouble(2));
+			System.out.println("toaccount"+toAccount.getBalance());
+			
+			
+			transaction(fromAccount, toAccount, con);
+			
+			
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();;
+			}
+			
+		  
+	  }
 	
 
 }
