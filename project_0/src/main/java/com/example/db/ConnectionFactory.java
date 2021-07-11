@@ -9,8 +9,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConnectionFactory {
-	
-	
+
 	private static Properties properties = new Properties();
 
 	static {
