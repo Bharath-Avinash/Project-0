@@ -14,33 +14,56 @@ import java.util.Scanner;
 import org.apache.log4j.Logger;
 
 import com.example.entity.User;
+import com.example.exceptions.AccountNotFoundException;
+import com.example.exceptions.InSufficientAmountException;
 import com.example.repository.Features_Imple;
+//import com.company.exception.InsufficientAmountException;
 import com.example.db.*;
 
 public class App {
 
 	public static Scanner sc = new Scanner(System.in);
-	 static Features_Imple feature = new Features_Imple();
-	// public static Logger logger = Logger.getLogger("app1");
+	static Features_Imple feature = new Features_Imple();
+	 public static Logger logger = Logger.getLogger("app1");
 
 	public static void main(String[] args) throws Exception {
-		
-	
-		
-		loadBankAccountsAndTransaction();
-		//feature.dateRange();
-		
-		//feature.dateRange( 30.06.2021,07.07.2021   );
-		//feature.currentMonthTransaction();
-	//	feature.lastThreeMonthTransaction();
+		System.out.println(
+				"press 0 for transaction \n press 1 for top Transaction\n  press 2 for current Month Transaction \n press 3 for dateRange Transaction \n press 4 for last three month transaction");
+		int option = sc.nextInt();
+		switch (option) {
+		case 0:
+			loadBankAccountsAndTransaction();
+
+			break;
+		case 1:
+			feature.topTransaction();
+			break;
+		case 2:
+			feature.currentMonthTransaction();
+			break;
+		case 3:
+			feature.dateRange();
+			break;
+		case 4:
+			feature.lastThreeMonthTransaction();
+
+		}
+
+		// feature.dateRange();
+
+		// feature.dateRange( 30.06.2021,07.07.2021 );
+		// feature.currentMonthTransaction();
+		// feature.lastThreeMonthTransaction();
 	}
 
 	public static void transaction(User fromAccount, User toAccount, Connection con) {
 
 		System.out.println("Enter the Amount");
 		double amount = sc.nextDouble();
-
+		
 		try {
+			con.setAutoCommit(false);
+
 			if (fromAccount.getBalance() > amount) {
 
 				fromAccount.setBalance(fromAccount.getBalance() - amount);
@@ -64,12 +87,16 @@ public class App {
 				// con.commit();
 
 				System.out.println("success");
-				//logger.info("transaction Succesful");
+				 logger.info("transaction Succesful");
 
 				updateTransactionDb(fromAccount, toAccount, con, amount);
+				con.setAutoCommit(true);
 
 			} else {
-				System.out.println(" Balance Insufficient");
+				con.rollback();
+				throw new InSufficientAmountException("Insufficient Amount to transfer\nyou have only "
+						+ fromAccount.getBalance() + " in your account");
+				// System.out.println(" Balance Insufficient");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -80,12 +107,11 @@ public class App {
 
 	public static void updateTransactionDb(User fromAccount, User toAccount, Connection con, double amount) {
 
-		
 		try {
 			String query = "INSERT INTO transaction (number,date,amount,debitOrCredit) values (?,?,?,?)";
 			PreparedStatement ps2 = con.prepareStatement(query);
 			ps2.setInt(1, fromAccount.getAccNumber());
-		//	java.sql.Date sqlDate = new java.sql.Date(new java.time.LocalDate.now());
+			// java.sql.Date sqlDate = new java.sql.Date(new java.time.LocalDate.now());
 			LocalDate fromDate = LocalDate.now();
 			ps2.setDate(2, java.sql.Date.valueOf(fromDate));
 			ps2.setDouble(3, amount);
@@ -99,7 +125,7 @@ public class App {
 			String query1 = "INSERT INTO transaction (number,date,amount,debitOrCredit) values (?,?,?,?)";
 			PreparedStatement ps3 = con.prepareStatement(query1);
 			ps3.setInt(1, toAccount.getAccNumber());
-			//java.sql.Date sqlDat = new java.sql.Date(new java.util.Date().getTime());
+			// java.sql.Date sqlDat = new java.sql.Date(new java.util.Date().getTime());
 			ps3.setDate(2, java.sql.Date.valueOf(fromDate));
 			ps3.setDouble(3, amount);
 			ps3.setString(4, "credit");
@@ -109,8 +135,8 @@ public class App {
 				System.out.println("transaction saved.");
 			}
 
-			System.out.print("transaction updated");
-			//logger.info("Transaction updated succesfully");
+			//System.out.print("transaction updated");
+			 logger.info("Transaction updated succesfully");
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -126,12 +152,12 @@ public class App {
 		try {
 			con = ConnectionFactory.getConnection();
 			String sql1 = "select * from Account where number = ? ";
-			
+
 			PreparedStatement stm1 = con.prepareStatement(sql1);
 			System.out.println("Enter fromAccount number");
-			stm1.setInt(1,sc.nextInt());
+			stm1.setInt(1, sc.nextInt());
 			ResultSet rs1 = stm1.executeQuery();
-			
+
 			rs1.next();
 			User fromAccount = new User(rs1.getInt(1), rs1.getDouble(2));
 			System.out.println("fromaccount" + fromAccount.getBalance());
@@ -139,19 +165,19 @@ public class App {
 			String sql2 = "select * from Account where number = ? ";
 			PreparedStatement stm2 = con.prepareStatement(sql2);
 			System.out.println("Enter  ToAccount number");
-			stm2.setInt(1,sc.nextInt());
+			stm2.setInt(1, sc.nextInt());
 			ResultSet rs2 = stm2.executeQuery();
 			rs2.next();
 			User toAccount = new User(rs2.getInt(1), rs2.getDouble(2));
 			System.out.println("toaccount" + toAccount.getBalance());
-		//	logger.info("from and to account loaded succesfully ");
+			 logger.info("from and to account loaded succesfully ");
 
 			transaction(fromAccount, toAccount, con);
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
-			
+			// e.printStackTrace();
+			throw new AccountNotFoundException("Invaild Account number");
 		}
 
 	}

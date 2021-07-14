@@ -1,21 +1,31 @@
 package com.example.entity;
 
-import java.sql.Date;
+import java.util.Date;
+import java.time.LocalDate;
 
 public class Transaction {
 
 	private int id;
 	private Date date;
+	
 	private double amount;
 	private String transcationType;
 
+	
+
 	public Transaction(int id, Date date, double amount, String transcationType) {
+		// TODO Auto-generated constructor stub
+		
+		
 		super();
 		this.id = id;
 		this.date = date;
 		this.amount = amount;
 		this.transcationType = transcationType;
+		
 	}
+	
+	
 
 	public int getId() {
 		return id;

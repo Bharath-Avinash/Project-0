@@ -23,8 +23,16 @@ import com.example.entity.Transaction;
 import com.example.entity.User;
 
 public class Features_Imple implements features {
+	
+	
 	Scanner sc = new Scanner(System.in);
 	public static Logger loggers = Logger.getLogger("app1");
+
+	public Features_Imple() {
+		super();
+		
+		loggers.info("features_imple instance created");
+	}
 
 	@Override
 	public void topTransaction() {
@@ -83,7 +91,7 @@ public class Features_Imple implements features {
 			int month = today.getMonthValue();
 			fdate = "1/" + month + "/2021";
 			LocalDate fromDate = LocalDate.parse(fdate, formatter);
-			LocalDate toDate = LocalDate.now();
+			//LocalDate toDate = LocalDate.now();
 			LocalDate toDate1 = LocalDate.now();
 
 			con = ConnectionFactory.getConnection();
@@ -134,7 +142,7 @@ public class Features_Imple implements features {
 		try {
 			List<Transaction> list = new ArrayList<Transaction>();
 
-			fdate = "1/5s/2021";
+			fdate = "1/5/2021";
 			LocalDate fromDate = LocalDate.parse(fdate, formatter);
 			// LocalDate toDate = LocalDate.now();
 			LocalDate toDate1 = LocalDate.now();
@@ -161,7 +169,7 @@ public class Features_Imple implements features {
 			});
 			
 			
-			loggers.info("Last month transaction succesfully");
+		loggers.info("Last month transaction succesfully");
 		} catch (Exception e) {
 			// TODO: handle exception
 			loggers.error("oops");
