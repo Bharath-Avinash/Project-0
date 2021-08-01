@@ -27,34 +27,55 @@ public class App {
 	 public static Logger logger = Logger.getLogger("app1");
 
 	public static void main(String[] args) throws Exception {
+		
+		int option;
+	
+			
+		
 		System.out.println(
-				"press 0 for transaction \n press 1 for top Transaction\n  press 2 for current Month Transaction \n press 3 for dateRange Transaction \n press 4 for last three month transaction");
-		int option = sc.nextInt();
+				"\n \n press 0 for transaction \n press 1 for top Transaction\n  press 2 for current Month Transaction \n press 3 for dateRange Transaction \n press 4 for last three month transaction \n press 5 to Stop the Process");
+		 option = sc.nextInt();
+		
 		switch (option) {
 		case 0:
 			loadBankAccountsAndTransaction();
+			//j='b';
 
 			break;
 		case 1:
 			feature.topTransaction();
+			//j='b';
 			break;
 		case 2:
 			feature.currentMonthTransaction();
+			//j='b';
 			break;
+			
 		case 3:
 			feature.dateRange();
+			//j='b';
 			break;
 		case 4:
 			feature.lastThreeMonthTransaction();
+		//	j='b';
+			break;
 
 		}
+		
+		if(option== 5) {
+			//temp = false;
+			System.out.println("Process Completed");
+		
+			
+		}}
+		
 
 		// feature.dateRange();
 
 		// feature.dateRange( 30.06.2021,07.07.2021 );
 		// feature.currentMonthTransaction();
 		// feature.lastThreeMonthTransaction();
-	}
+	
 
 	public static void transaction(User fromAccount, User toAccount, Connection con) {
 

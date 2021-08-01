@@ -26,6 +26,7 @@ public class Features_Imple implements features {
 	
 	
 	Scanner sc = new Scanner(System.in);
+	Scanner scanner = new Scanner(System.in);
 	public static Logger loggers = Logger.getLogger("app1");
 
 	public Features_Imple() {
@@ -188,7 +189,7 @@ public class Features_Imple implements features {
 	@Override
 	public void dateRange() {
 		// TODO Auto-generated method stub
-		Scanner scanner = new Scanner(System.in);
+		
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 		String fdate = null;
 		String tdate = null;
@@ -198,9 +199,9 @@ public class Features_Imple implements features {
 
 			System.out.println("Enter fromDate ");
 
-			fdate = scanner.next();
+			fdate = sc.next();
 			System.out.println("Enter toDate ");
-			tdate = scanner.next();
+			tdate = sc.next();
 
 			// LocalDate toDate = LocalDate.of(toYear, toMonth, toDay);
 
